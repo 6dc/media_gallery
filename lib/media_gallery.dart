@@ -1,7 +1,6 @@
 library media_gallery;
 
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
