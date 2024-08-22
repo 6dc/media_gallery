@@ -331,14 +331,17 @@ public class SwiftMediaGalleryPlugin: NSObject, FlutterPlugin {
                 options.isNetworkAccessAllowed = true
                 options.version = .current
                 
-                manager.requestAVAsset(forVideo: asset, options: options, resultHandler: { (avAsset, avAudioMix, info) in
+                 manager.requestAVAsset(forVideo: asset, options: options, resultHandler: { (avAsset, avAudioMix, info) in
                     DispatchQueue.main.async(execute: {
                         do {
-                            let avAsset = avAsset as? AVURLAsset
-                            let data = try Data(contentsOf: avAsset!.url)
-                            let filepath = self.exportPathForAsset(asset: asset, ext: ".mov")
-                            try! data.write(to: filepath, options: .atomic)
-                            completion(filepath.absoluteString, nil)
+                            if let avAsset = avAsset as? AVURLAsset {
+                                let data = try Data(contentsOf: avAsset.url)
+                                let filepath = self.exportPathForAsset(asset: asset, ext: ".mov")
+                                try! data.write(to: filepath, options: .atomic)
+                                completion(filepath.absoluteString, nil)
+                            } else {
+                                completion(nil, NSError(domain: "media_gallery", code: 5, userInfo: nil))
+                            }
                         }
                         catch {
                             completion(nil,  NSError(domain: "media_gallery", code: 5, userInfo: nil))
