@@ -83,7 +83,7 @@ class MediaGallery {
     return bytes;
   }
 
-  static Future<File> _getMediaFile({
+  static Future<File?> _getMediaFile({
     required String mediaId,
     MediaType? mediaType,
     int? width,
@@ -95,7 +95,10 @@ class MediaGallery {
     final path = await _channel.invokeMethod('getMediaFile', {
       'mediaId': mediaId,
       'mediaType': _mediaTypeToJson(mediaType),
-    }) as String;
+    });
+    if (path == null || path is! String) {
+      return null; // Skip this media if the path is null or not a String
+    }
     return File(path);
   }
 }
